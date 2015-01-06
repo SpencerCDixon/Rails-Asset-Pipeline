@@ -17,20 +17,20 @@ Solves:
 
 #### Three Places To Store Assets:
 
-app/assets - file specific to current project
-lib/assets - files for internal libraries
-vendor/assets - files for external libraries
+app/assets - file specific to current project  
+lib/assets - files for internal libraries  
+vendor/assets - files for external libraries  
 
 #### Manifest Files
 
-app/assets/javascripts/application.js
-app/assets/stylesheets/application.css
+app/assets/javascripts/application.js  
+app/assets/stylesheets/application.css  
 
 The manifest files specify where to find other files to load in and in which
-order to load them.
+order to load them.  
 
 In order to add to manifest you need there to be a comment in the beginning of
-the line and an equals sign.
+the line and an equals sign.  
 
 ```javascript
 //= require foo   # single line comment
@@ -42,4 +42,53 @@ the line and an equals sign.
 */
 ```
 
+#### Directive In Manifest File
 
+= require_self:  Inserts content of the file itself (after directives).  
+= require_directory:  Loads all files of the same format in the specified
+directory in an alphabetical order.  
+= require_tree: Just like require_directory but it also recursively requires all
+files in subdirectories.  
+
+**Note**: Directives are loaded in the order they appear unless you use
+require_tree in which case there is no guarantee of the order in which the files
+will be included
+
+#### Search Pathes
+
+Can be edited with ``config.assets.paths << Rails.root.join('app', 'flash',
+'assets')``  
+
+All standard places are added in search paths.  To add fonts you could:
+``app/assets/fonts`` folder since it's under the ``app/assets`` it will be
+included.  Or you can target files in subdirectories by using a relative path:  
+
+```ruby
+// This will load the app/assets/javascripts/library/foo.js
+//= require 'library/foo'
+```
+
+**Note**: You could put CSS files in JS and JS in CSS folder and everything
+would work fine, people would just be annoyed at you.
+
+#### File Extensions
+
+Get compiled in the order they are given:
+``products.css.sass.erb`` will run the file through the ERb engine, then sass,
+then deliver a css file.
+
+#### Helpers
+
+`` <%= stylesheet_link_tag "application" %>``  
+`` <%= javascript_include_tag "application" %>``  
+
+You can pass in different manifest files other than application to these helpers
+
+``image_tag`` knows to search in /app/assets/images
+
+Sass Helper:
+```ruby
+header {
+  background-image: image-url('header-photo.png')
+}
+```
